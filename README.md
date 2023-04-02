@@ -9,6 +9,8 @@ docker run \
  -d \
  postgres
 
+// segunda opção: docker run --name postgres -e POSTGRES_USER=frali -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=cars -p 5432:5432 -d postgres
+
 ## Lista os containers em execução
 
 docker ps
@@ -45,8 +47,8 @@ docker run \
  -d \
  mongoclient/mongoclient
 
-## DB
+## Criar usuário com permissões moderadas
 
 docker exec -it mongodb \
  mongo --host localhost -u admin -p pass --authenticationDatabase admin \
- --eval "db.getSiblingDB('cars').createUser({user: 'nandin', pwd: 'mypass', roles: [{role: 'readWrite', db: 'cars'}]})"
+ --eval "db.getSiblingDB('cars').createUser({user: 'frali', pwd: 'mypass', roles: [{role: 'readWrite', db: 'cars'}]})"

@@ -1,18 +1,19 @@
-const MongoDB = require('../db/strategies/mongodb');
+const MongoDB = require('../db/strategies/mongodb/mongodb');
 const Context = require('../db/strategies/base/contextStrategy');
+const CarSchema = require('../db/strategies/mongodb/schemas/carSchema');
 
 const MOCK_CAR_CREATE = { name: 'Gol', brand: 'Volkswagen', year: 2001 };
 const MOCK_CAR_UPDATE = { name: 'Strada', brand: 'Fiat', year: 2010 };
 
-const context = new Context(new MongoDB());
+let context = {};
 
 describe('MongoDB CRUD', () => {
   beforeAll(async () => {
-    await context.connect();
+    const connection = MongoDB.connect();
+    context = new Context(new MongoDB(connection, CarSchema));
   });
   afterAll(async () => {
     await context.closeConnection();
-    await context.delete();
   });
 
   it('should connect on database with Mongoose', async () => {
@@ -51,7 +52,7 @@ describe('MongoDB CRUD', () => {
   });
 
   it('should delete a item on database', async () => {
-    const [{ id }] = await context.read({ name: MOCK_CAR_CREATE.name });
+    const [{ id }] = await context.read({ name: MOCK_CAR_UPDATE.name });
     const result = await context.delete(id);
 
     expect(result.deletedCount).toBe(1);

@@ -1,14 +1,17 @@
-const Postgres = require('../db/strategies/postgres');
+const Postgres = require('../db/strategies/postgres/postgres');
 const Context = require('../db/strategies/base/contextStrategy');
+const CarSchema = require('../db/strategies/postgres/schemas/carSchema');
 
 const MOCK_CAR_CREATE = { carName: 'Gol', fuelType: 'Gasoline', year: 2001 };
 const MOCK_CAR_UPDATE = { carName: 'Strada', fuelType: 'Diesel', year: 2010 };
 
-const context = new Context(new Postgres());
+let context = {};
 
 describe('Postgres CRUD', () => {
   beforeAll(async () => {
-    await context.connect();
+    const connection = await Postgres.connect();
+    const model = await Postgres.defineModel(connection, CarSchema);
+    context = new Context(new Postgres(connection, model));
     await context.delete();
     await context.create(MOCK_CAR_CREATE);
     await context.create(MOCK_CAR_UPDATE);
