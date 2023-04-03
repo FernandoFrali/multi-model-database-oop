@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/FernandoFrali/strategy-multi-datasources#readme",
   "dependencies": {
+    "express": "^4.18.2",
     "mongoose": "^7.0.3",
     "pg": "^8.10.0",
     "pg-hstore": "^2.3.4",
