@@ -1,5 +1,5 @@
-const IDatabase = require('../interfaces/interfaceDatabase');
 const Sequelize = require('sequelize');
+const IDatabase = require('../interfaces/interfaceDatabase');
 
 class Postgres extends IDatabase {
   constructor(connection, schema) {
@@ -7,12 +7,13 @@ class Postgres extends IDatabase {
     this._connection = connection;
     this._schema = schema;
   }
+
   async isConnected() {
     try {
       await this._connection.authenticate();
       return true;
     } catch (error) {
-      console.log('Failed!', error);
+      return 'Failed to connect!';
     }
   }
 
@@ -41,12 +42,12 @@ class Postgres extends IDatabase {
   }
 
   async read(item) {
-    const query = item ? item : {};
+    const query = item || {};
     return this._schema.findAll({ where: query, raw: true });
   }
 
   async update(id, item) {
-    return this._schema.update(item, { where: { id: id } });
+    return this._schema.update(item, { where: { id } });
   }
 
   async delete(id) {

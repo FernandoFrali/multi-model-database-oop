@@ -14,7 +14,7 @@ const MOCK_CAR_INIT = {
 let server;
 let MOCK_ID = '';
 
-describe('GET /cars', () => {
+describe('/cars route tests', () => {
   beforeAll(async () => {
     server = await init();
 
@@ -25,7 +25,7 @@ describe('GET /cars', () => {
     });
 
     const data = JSON.parse(result.payload);
-    MOCK_ID = data._id;
+    MOCK_ID = data.id;
   });
 
   it('should return an array of cars', async () => {
@@ -82,18 +82,19 @@ describe('GET /cars', () => {
   });
 
   it('should update a car', async () => {
-    const _id = MOCK_ID;
+    const id = MOCK_ID;
     const expected = {
-      name: 'Gallardo',
+      name: 'Hurracane',
     };
 
     const result = await server.inject({
       method: 'PATCH',
-      url: `/cars/${_id}`,
+      url: `/cars/${id}`,
       payload: JSON.stringify(expected),
     });
 
     const statusCode = result.statusCode;
+    console.log('payload', result.payload);
     const data = JSON.parse(result.payload);
 
     expect(statusCode).toEqual(200);
@@ -101,14 +102,14 @@ describe('GET /cars', () => {
   });
 
   it('should get a error when try to update a car with incorrect ID', async () => {
-    const _id = `643463e500517dda54404de4`;
+    const id = `643463e500517dda54404de4`;
     const expected = {
       name: 'Gallardo',
     };
 
     const result = await server.inject({
       method: 'PATCH',
-      url: `/cars/${_id}`,
+      url: `/cars/${id}`,
       payload: JSON.stringify(expected),
     });
 

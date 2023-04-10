@@ -1,8 +1,4 @@
-class NotImplementedException extends Error {
-  constructor() {
-    super('Not Implemented Exception');
-  }
-}
+const NotImplementedException = require('../../../errors/NotImplementedException');
 
 class IDatabase {
   create(item) {

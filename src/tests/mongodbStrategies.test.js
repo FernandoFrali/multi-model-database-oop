@@ -13,7 +13,7 @@ describe('MongoDB CRUD', () => {
     context = new Context(new MongoDB(connection, CarSchema));
   });
   afterAll(async () => {
-    await context.closeConnection();
+    await MongoDB.closeConnection();
   });
 
   it('should connect on database with Mongoose', async () => {

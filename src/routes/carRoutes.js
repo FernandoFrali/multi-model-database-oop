@@ -1,5 +1,3 @@
-const Context = require('../db/strategies/base/contextStrategy');
-const MongoDB = require('../db/strategies/mongodb/mongodb');
 const Joi = require('joi');
 
 const BaseRoute = require('./base/baseRoute');
@@ -20,9 +18,9 @@ class CarRoutes extends BaseRoute {
       options: {
         validate: {
           // payload -> body da requisição
-          // headers -> header
-          // params -> na URL :id
-          // query -> skip=10&limit=100
+          // headers -> header
+          // params -> na URL :id
+          // query -> skip=10&limit=100
           failAction,
           query: Joi.object({
             skip: Joi.number().integer().default(0),
@@ -31,7 +29,7 @@ class CarRoutes extends BaseRoute {
           }),
         },
       },
-      handler: (req, head) => {
+      handler: (req) => {
         try {
           const { skip, limit, name } = req.query;
           const nameRegex = {
@@ -39,10 +37,10 @@ class CarRoutes extends BaseRoute {
           };
 
           const query = name ? { name: nameRegex } : {};
+          const radix = 10;
 
-          return this.db.read(query, parseInt(skip), parseInt(limit));
+          return this.db.read(query, parseInt(skip, radix), parseInt(limit, radix));
         } catch (listError) {
-          console.error('listError', listError);
           return 'Internal server error';
         }
       },
@@ -70,10 +68,9 @@ class CarRoutes extends BaseRoute {
 
           return {
             message: 'Car has been successfully registered!',
-            _id: result._id,
+            id: result.id,
           };
         } catch (postError) {
-          console.error('error', postError);
           return 'Internal server error!';
         }
       },
@@ -99,23 +96,20 @@ class CarRoutes extends BaseRoute {
         try {
           const { id } = req.params;
           const { payload } = req;
-          // with the two lines above, we are asking for javascript that we dont want 'undefined' objects. First this transform to string, then transform into object. This way, we dont save 'undefined' objects. vv
+          /* with the two lines above
+          we are asking for javascript that we dont want 'undefined' objects.
+          First this transform to string
+          then transform into object. This way, we dont save 'undefined' objects. vv */
           const dataString = JSON.stringify(payload);
           const data = JSON.parse(dataString);
-          console.log(data);
           const result = await this.db.update(id, data);
-          console.log('result', result);
 
-          if (result.modifiedCount !== 1)
-            return {
-              message: 'Failed to update Car!',
-            };
+          if (result.modifiedCount !== 1) return { message: 'Failed to update Car!' };
 
           return {
             message: 'Car has been successfully updated!',
           };
         } catch (patchError) {
-          console.error('patchError: ', patchError);
           return 'Internal server error!';
         }
       },

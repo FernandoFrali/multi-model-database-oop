@@ -1,5 +1,5 @@
-const IDatabase = require('../interfaces/interfaceDatabase');
 const mongoose = require('mongoose');
+const IDatabase = require('../interfaces/interfaceDatabase');
 
 const STATUS = {
   0: 'Desconectado',
@@ -14,36 +14,35 @@ class MongoDB extends IDatabase {
     this._connection = connection;
     this._schema = schema;
   }
+
   async isConnected() {
     const state = STATUS[this._connection.readyState];
     if (state === 'Conectado') return state;
 
     if (state === 'Conectando') return state;
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
 
     return STATUS[mongoose.connection.readyState];
   }
 
   static async connect() {
-    const MONGODB_URI =
-      process.env.MONGODB_URI ||
-      'mongodb://frali:mypass@192.168.99.101:27017/cars';
+    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://frali:mypass@192.168.99.101:27017/cars';
 
     await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
     });
 
-    const connection = mongoose.connection;
+    const { connection } = mongoose;
 
-    connection.once('open', () => {
-      console.log('Database is running!');
-    });
+    connection.once('open', () => 'Database is running!');
 
     return connection;
   }
 
-  async closeConnection() {
+  static async closeConnection() {
     return mongoose.disconnect();
   }
 
