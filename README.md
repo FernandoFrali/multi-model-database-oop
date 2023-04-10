@@ -38,6 +38,10 @@ docker run \
  -d \
  mongo:4
 
+### Abre o terminal do MongoDB
+
+docker exec -it container_id mongo -u frali -p mypass --authenticationDatabase cars
+
 ## Mongo Client
 
 docker run \
