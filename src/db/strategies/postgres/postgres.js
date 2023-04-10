@@ -24,7 +24,7 @@ class Postgres extends IDatabase {
 
   static async connect() {
     const connection = new Sequelize('cars', 'frali', 'pass', {
-      host: 'localhost',
+      host: '192.168.99.101',
       dialect: 'postgres',
       logging: false,
     });
