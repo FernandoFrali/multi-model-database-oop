@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const Boom = require('@hapi/boom');
 
 const BaseRoute = require('./base/baseRoute');
 
@@ -41,7 +42,7 @@ class CarRoutes extends BaseRoute {
 
           return this.db.read(query, parseInt(skip, radix), parseInt(limit, radix));
         } catch (listError) {
-          return 'Internal server error';
+          return Boom.internal();
         }
       },
     };
@@ -71,7 +72,7 @@ class CarRoutes extends BaseRoute {
             id: result.id,
           };
         } catch (postError) {
-          return 'Internal server error!';
+          return Boom.internal();
         }
       },
     };
@@ -104,13 +105,39 @@ class CarRoutes extends BaseRoute {
           const data = JSON.parse(dataString);
           const result = await this.db.update(id, data);
 
-          if (result.modifiedCount !== 1) return { message: 'Failed to update Car!' };
+          if (result.modifiedCount !== 1) return Boom.preconditionFailed('ID not found on database');
 
           return {
             message: 'Car has been successfully updated!',
           };
         } catch (patchError) {
-          return 'Internal server error!';
+          return Boom.internal();
+        }
+      },
+    };
+  }
+
+  delete() {
+    return {
+      path: '/cars/{id}',
+      method: 'DELETE',
+      options: {
+        validate: {
+          params: Joi.object({
+            id: Joi.string().required(),
+          }),
+        },
+      },
+      handler: async (req) => {
+        try {
+          const { id } = req.params;
+          const result = await this.db.delete(id);
+
+          if (result.deletedCount !== 1) return Boom.preconditionFailed('ID not found on database');
+
+          return { message: 'Car has been successfully removed!' };
+        } catch (deleteError) {
+          return Boom.internal();
         }
       },
     };
