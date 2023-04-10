@@ -1,15 +1,31 @@
 const init = require('../api-example');
 
-let server;
 const MOCK_CAR_REGISTER = {
   name: 'Spider',
   brand: 'Ferrari',
   year: 2023,
 };
+const MOCK_CAR_INIT = {
+  name: 'Aventador',
+  brand: 'Lamborghini',
+  year: 2022,
+};
+
+let server;
+let MOCK_ID = '';
 
 describe('GET /cars', () => {
   beforeAll(async () => {
     server = await init();
+
+    const result = await server.inject({
+      method: 'POST',
+      url: '/cars',
+      payload: JSON.stringify(MOCK_CAR_INIT),
+    });
+
+    const data = JSON.parse(result.payload);
+    MOCK_ID = data._id;
   });
 
   it('should return an array of cars', async () => {
@@ -33,9 +49,9 @@ describe('GET /cars', () => {
       url: `/cars?skip=0&limit=${SIZE_LIMIT}`,
     });
 
-    const dados = JSON.parse(result.payload);
+    const data = JSON.parse(result.payload);
 
-    expect(dados.length).toEqual(SIZE_LIMIT);
+    expect(data.length).toEqual(SIZE_LIMIT);
   });
 
   it('should return a type fail', async () => {
@@ -45,8 +61,8 @@ describe('GET /cars', () => {
       url: `/cars?skip=0&limit=${SIZE_LIMIT}`,
     });
 
-    const dados = JSON.parse(result.payload);
-    const statusCode = dados.statusCode;
+    const data = JSON.parse(result.payload);
+    const statusCode = data.statusCode;
 
     expect(statusCode).toEqual(400);
   });
@@ -54,14 +70,52 @@ describe('GET /cars', () => {
   it('should register a car', async () => {
     const result = await server.inject({
       method: 'POST',
-      url: `/cars`,
+      url: '/cars',
       payload: JSON.stringify(MOCK_CAR_REGISTER),
     });
-    console.log('result', result);
+
     const statusCode = result.statusCode;
     const { message } = JSON.parse(result.payload);
 
     expect(statusCode).toEqual(200);
     expect(message).toBe('Car has been successfully registered!');
+  });
+
+  it('should update a car', async () => {
+    const _id = MOCK_ID;
+    const expected = {
+      name: 'Gallardo',
+    };
+
+    const result = await server.inject({
+      method: 'PATCH',
+      url: `/cars/${_id}`,
+      payload: JSON.stringify(expected),
+    });
+
+    const statusCode = result.statusCode;
+    const data = JSON.parse(result.payload);
+
+    expect(statusCode).toEqual(200);
+    expect(data.message).toBe('Car has been successfully updated!');
+  });
+
+  it('should get a error when try to update a car with incorrect ID', async () => {
+    const _id = `643463e500517dda54404de4`;
+    const expected = {
+      name: 'Gallardo',
+    };
+
+    const result = await server.inject({
+      method: 'PATCH',
+      url: `/cars/${_id}`,
+      payload: JSON.stringify(expected),
+    });
+
+    const statusCode = result.statusCode;
+    const data = JSON.parse(result.payload);
+
+    expect(statusCode).toEqual(200);
+    expect(data.message).toBe('Failed to update Car!');
   });
 });
