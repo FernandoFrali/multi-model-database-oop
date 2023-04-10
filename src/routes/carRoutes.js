@@ -42,7 +42,7 @@ class CarRoutes extends BaseRoute {
 
           return this.db.read(query, parseInt(skip), parseInt(limit));
         } catch (listError) {
-          console.log('listError', listError);
+          console.error('listError', listError);
           return 'Internal server error';
         }
       },
@@ -73,8 +73,50 @@ class CarRoutes extends BaseRoute {
             _id: result._id,
           };
         } catch (postError) {
-          console.log('error', postError);
-          return 'Internal Server Error!';
+          console.error('error', postError);
+          return 'Internal server error!';
+        }
+      },
+    };
+  }
+
+  update() {
+    return {
+      path: '/cars/{id}',
+      method: 'PATCH',
+      options: {
+        validate: {
+          params: Joi.object({
+            id: Joi.string().required(),
+          }),
+          payload: Joi.object({
+            name: Joi.string().min(3).max(100),
+            brand: Joi.string().min(2).max(100),
+          }),
+        },
+      },
+      handler: async (req) => {
+        try {
+          const { id } = req.params;
+          const { payload } = req;
+          // with the two lines above, we are asking for javascript that we dont want 'undefined' objects. First this transform to string, then transform into object. This way, we dont save 'undefined' objects. vv
+          const dataString = JSON.stringify(payload);
+          const data = JSON.parse(dataString);
+          console.log(data);
+          const result = await this.db.update(id, data);
+          console.log('result', result);
+
+          if (result.modifiedCount !== 1)
+            return {
+              message: 'Failed to update Car!',
+            };
+
+          return {
+            message: 'Car has been successfully updated!',
+          };
+        } catch (patchError) {
+          console.error('patchError: ', patchError);
+          return 'Internal server error!';
         }
       },
     };
