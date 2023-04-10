@@ -116,7 +116,37 @@ describe('/cars route tests', () => {
     const statusCode = result.statusCode;
     const data = JSON.parse(result.payload);
 
+    expect(statusCode).toEqual(412);
+    expect(data.message).toBe('ID not found on database');
+  });
+
+  it('should delete a item', async () => {
+    const id = MOCK_ID;
+
+    const result = await server.inject({
+      method: 'DELETE',
+      url: `/cars/${id}`
+    });
+
+    const statusCode = result.statusCode;
+    const data = JSON.parse(result.payload);
+
     expect(statusCode).toEqual(200);
-    expect(data.message).toBe('Failed to update Car!');
+    expect(data.message).toBe('Car has been successfully removed!');
+  });
+
+  it('should get a error when try to delete a item with incorrect ID', async () => {
+    const id = `643463e500517dda54404de4`;
+
+    const result = await server.inject({
+      method: 'DELETE',
+      url: `/cars/${id}`
+    });
+
+    const statusCode = result.statusCode;
+    const data = JSON.parse(result.payload);
+
+    expect(statusCode).toEqual(412);
+    expect(data.message).toBe('ID not found on database');
   });
 });
