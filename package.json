@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "start": "node src/index.js",
-    "dev": "nodemon src/api-example.js",
+    "dev": "nodemon src/api",
     "lint": "eslint --no-inline-config --no-error-on-unmatched-pattern -c .eslintrc.json ."
   },
   "repository": {
@@ -23,6 +23,9 @@
   "dependencies": {
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.3.1",
+    "@hapi/inert": "^7.1.0",
+    "@hapi/vision": "^7.0.1",
+    "hapi-swagger": "^16.0.1",
     "joi": "^17.9.1",
     "mongoose": "^7.0.3",
     "pg": "^8.10.0",
