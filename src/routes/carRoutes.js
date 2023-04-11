@@ -17,10 +17,13 @@ class CarRoutes extends BaseRoute {
       method: 'GET',
       path: '/cars',
       options: {
+        tags: ['api'],
+        description: 'Should list cars',
+        notes: 'can page results and filter by name',
         validate: {
-          // payload -> body da requisição
+          // payload -> requisition body
           // headers -> header
-          // params -> na URL :id
+          // params -> URL :id
           // query -> skip=10&limit=100
           failAction,
           query: Joi.object({
@@ -53,6 +56,9 @@ class CarRoutes extends BaseRoute {
       path: '/cars',
       method: 'POST',
       options: {
+        tags: ['api'],
+        description: 'Should add cars',
+        notes: 'should add cars by name, brand and year',
         validate: {
           failAction,
           payload: Joi.object({
@@ -83,6 +89,9 @@ class CarRoutes extends BaseRoute {
       path: '/cars/{id}',
       method: 'PATCH',
       options: {
+        tags: ['api'],
+        description: 'Should update cars by ID',
+        notes: 'should update any field of a car',
         validate: {
           params: Joi.object({
             id: Joi.string().required(),
@@ -122,6 +131,9 @@ class CarRoutes extends BaseRoute {
       path: '/cars/{id}',
       method: 'DELETE',
       options: {
+        tags: ['api'],
+        description: 'Should remove cars by ID',
+        notes: 'ID need to be valid',
         validate: {
           params: Joi.object({
             id: Joi.string().required(),

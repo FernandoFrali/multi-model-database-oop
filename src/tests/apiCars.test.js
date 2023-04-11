@@ -1,4 +1,4 @@
-const init = require('../api-example');
+const init = require('../api');
 
 const MOCK_CAR_REGISTER = {
   name: 'Spider',
@@ -16,7 +16,7 @@ let MOCK_ID = '';
 
 describe('/cars route tests', () => {
   beforeAll(async () => {
-    server = await init();
+    server = await init;
 
     const result = await server.inject({
       method: 'POST',

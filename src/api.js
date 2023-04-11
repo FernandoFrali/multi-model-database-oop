@@ -1,4 +1,7 @@
 const Hapi = require('@hapi/hapi');
+const HapiSwagger = require('hapi-swagger');
+const Vision = require('@hapi/vision');
+const Inert = require('@hapi/inert');
 
 const CarRoute = require('./routes/carRoutes');
 
@@ -16,12 +19,26 @@ const init = async () => {
   const connection = MongoDB.connect();
   const context = new Context(new MongoDB(connection, CarSchema));
 
-  server.route([...mapRoutes(new CarRoute(context), CarRoute.methods())]);
+  const swaggerOptions = {
+    info: {
+      title: 'Cars API',
+      version: 'v1.0',
+    },
+  };
+
+  await server.register([
+    Vision,
+    Inert,
+    {
+      plugin: HapiSwagger,
+      options: swaggerOptions,
+    },
+  ]);
+
+  server.route(mapRoutes(new CarRoute(context), CarRoute.methods()));
   await server.start();
-  console.log('Server running on %s', server.info.uri);
 
   return server;
 };
-// init();
 
-module.exports = init;
+module.exports = init();
