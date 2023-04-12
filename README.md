@@ -2,7 +2,7 @@
 
 ## This is a multi-model database project: OOP API with authentication (JWT) and documentation (Swagger).
 
-_Instructions to access NoSQL and SQL local clients are on bottom of the page!
+_Instructions to access NoSQL and SQL local clients are on bottom of the page!_
 
 ### How to run:
 
