@@ -1,58 +1,37 @@
-# Criar e executar container Postgres
+# How to run:
 
-docker run \
- --name postgres \
- -e POSTGRES_USER=frali \
- -e POSTGRES_PASSWORD=pass \
- -e POSTGRES_DB=cars \
- -p 5432:5432 \
- -d \
- postgres
+## This is a multi-model database project: OOP API with authentication (JWT) and documentation (Swagger).
 
-// segunda opção: docker run --name postgres -e POSTGRES_USER=frali -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=cars -p 5432:5432 -d postgres
+_Instructions to access NoSQL and SQL local clients are on bottom of the page!
 
-## Lista os containers em execução
+### How to run:
 
-docker ps
+Just is required <a href="https://www.docker.com/"><strong>Docker (and docker-compose)</strong></a> and <a href="https://nodejs.org/en/download"><strong>Node</strong></a>.
 
-### Abre o terminal do postgres
+1. First of all, go to project root path on your terminal. Example:
+```
+cd strategy-multi-datasources
+```
 
-docker exec -it postgres /bin/bash
+2. Mount the images and containers with docker-compose
+```
+docker-compose up
+```
 
-## Criar e executar container adminer (client sql)
+3. Install dependencies
+```
+npm install
+```
 
-docker run \
- --name adminer \
- -p 8080:8080 \
- --link postgres:postgres \
- -d \
- adminer
+4. Run project with node
+```
+npm start
+```
 
-# Criar container MongoDB
+> **Note**
+> When you use "docker-compose up" to mount image and containers, a NoSQL Client and SQL Client becomes up with Postgres and MongoDB container.
+> If you want to access it, is possible with: http://localhost:8080 (adminer) and http://localhost:3000 (mongodb). User and password can be find on docker-compose file, but just do that if you know how to!
+> </br>
 
-docker run \
- --name mongodb \
- -p 27017:27017 \
- -e MONGO_INITDB_ROOT_USERNAME=admin \
- -e MONGO_INITDB_ROOT_PASSWORD=pass \
- -d \
- mongo:4
+_Now you can access API and Documentation on "http://localhost:4040/cars" and "http://localhost:4040/documentation".
 
-### Abre o terminal do MongoDB
-
-docker exec -it container_id mongo -u frali -p mypass --authenticationDatabase cars
-
-## Mongo Client
-
-docker run \
- --name mongoclient \
- -p 3000:3000 \
- --link mongodb:mongodb \
- -d \
- mongoclient/mongoclient
-
-## Criar usuário com permissões moderadas
-
-docker exec -it mongodb \
- mongo --host localhost -u admin -p pass --authenticationDatabase admin \
- --eval "db.getSiblingDB('cars').createUser({user: 'frali', pwd: 'mypass', roles: [{role: 'readWrite', db: 'cars'}]})"
