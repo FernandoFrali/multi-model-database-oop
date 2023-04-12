@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: frali
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: cars
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+    links:
+      - postgres
+
+  mongodb:
+    image: mongo:4
+    ports:
+      - "27017:27017"
+    restart: on-failure
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: pass
+      MONGO_INITDB_ROOT_DATABASE: cars
+    volumes:
+      - mongo_data:/data/db
+      - ./mongo-init-scripts/create-user.js:/docker-entrypoint-initdb.d/create-user.js:ro
+
+  mongoclient:
+    image: mongoclient/mongoclient
+    ports:
+      - "3000:3000"
+    links:
+      - mongodb
+
+volumes:
+  postgres_data:
+  mongo_data:
