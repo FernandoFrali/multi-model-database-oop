@@ -29,7 +29,7 @@ class MongoDB extends IDatabase {
   }
 
   static async connect() {
-    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://frali:mypass@192.168.99.101:27017/cars';
+    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://testuser:passtest@192.168.99.101:27017/cars';
 
     await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,

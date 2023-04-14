@@ -6,6 +6,10 @@ const BaseRoute = require('./base/baseRoute');
 const failAction = (request, head, error) => {
   throw error;
 };
+
+const headers = Joi.object({
+  authorization: Joi.string().required(),
+}).unknown();
 class CarRoutes extends BaseRoute {
   constructor(db) {
     super();
@@ -26,6 +30,7 @@ class CarRoutes extends BaseRoute {
           // params -> URL :id
           // query -> skip=10&limit=100
           failAction,
+          headers,
           query: Joi.object({
             skip: Joi.number().integer().default(0),
             limit: Joi.number().integer().default(10),
@@ -61,6 +66,7 @@ class CarRoutes extends BaseRoute {
         notes: 'should add cars by name, brand and year',
         validate: {
           failAction,
+          headers,
           payload: Joi.object({
             name: Joi.string().required().min(3).max(100),
             brand: Joi.string().required().min(2).max(100),
@@ -96,6 +102,8 @@ class CarRoutes extends BaseRoute {
           params: Joi.object({
             id: Joi.string().required(),
           }),
+          headers,
+          failAction,
           payload: Joi.object({
             name: Joi.string().min(3).max(100),
             brand: Joi.string().min(2).max(100),
@@ -135,6 +143,8 @@ class CarRoutes extends BaseRoute {
         description: 'Should remove cars by ID',
         notes: 'ID need to be valid',
         validate: {
+          failAction,
+          headers,
           params: Joi.object({
             id: Joi.string().required(),
           }),
