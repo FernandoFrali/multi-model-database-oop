@@ -1,5 +1,11 @@
 const init = require('../api');
 
+const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJldGFUZXN0ZXIiLCJpZCI6MSwiaWF0IjoxNjgxNDMyMzk0fQ.mzO4SuJjMroPTZPq2PcTxYhnEUpB_VUubHeBEf0PF0I';
+
+const headers = {
+  Authorization: TOKEN,
+}
+
 const MOCK_CAR_REGISTER = {
   name: 'Spider',
   brand: 'Ferrari',
@@ -21,6 +27,7 @@ describe('/cars route tests', () => {
     const result = await server.inject({
       method: 'POST',
       url: '/cars',
+      headers,
       payload: JSON.stringify(MOCK_CAR_INIT),
     });
 
@@ -31,6 +38,7 @@ describe('/cars route tests', () => {
   it('should return an array of cars', async () => {
     const res = await server.inject({
       method: 'GET',
+      headers,
       url: '/cars?skip=0&limit=0',
     });
 
@@ -46,6 +54,7 @@ describe('/cars route tests', () => {
     const SIZE_LIMIT = 3;
     const result = await server.inject({
       method: 'GET',
+      headers,
       url: `/cars?skip=0&limit=${SIZE_LIMIT}`,
     });
 
@@ -58,6 +67,7 @@ describe('/cars route tests', () => {
     const SIZE_LIMIT = 'test';
     const result = await server.inject({
       method: 'GET',
+      headers,
       url: `/cars?skip=0&limit=${SIZE_LIMIT}`,
     });
 
@@ -70,6 +80,7 @@ describe('/cars route tests', () => {
   it('should register a car', async () => {
     const result = await server.inject({
       method: 'POST',
+      headers,
       url: '/cars',
       payload: JSON.stringify(MOCK_CAR_REGISTER),
     });
@@ -89,6 +100,7 @@ describe('/cars route tests', () => {
 
     const result = await server.inject({
       method: 'PATCH',
+      headers,
       url: `/cars/${id}`,
       payload: JSON.stringify(expected),
     });
@@ -110,6 +122,7 @@ describe('/cars route tests', () => {
     const result = await server.inject({
       method: 'PATCH',
       url: `/cars/${id}`,
+      headers,
       payload: JSON.stringify(expected),
     });
 
@@ -125,6 +138,7 @@ describe('/cars route tests', () => {
 
     const result = await server.inject({
       method: 'DELETE',
+      headers,
       url: `/cars/${id}`
     });
 
@@ -140,6 +154,7 @@ describe('/cars route tests', () => {
 
     const result = await server.inject({
       method: 'DELETE',
+      headers,
       url: `/cars/${id}`
     });
 
