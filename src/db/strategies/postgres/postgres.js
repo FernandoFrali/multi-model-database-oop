@@ -46,8 +46,9 @@ class Postgres extends IDatabase {
     return this._schema.findAll({ where: query, raw: true });
   }
 
-  async update(id, item) {
-    return this._schema.update(item, { where: { id } });
+  async update(id, item, upsert = false) {
+    const switchFunction = upsert ? 'upsert' : 'update';
+    return this._schema[switchFunction](item, { where: { id } });
   }
 
   async delete(id) {
